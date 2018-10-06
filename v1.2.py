@@ -1,60 +1,61 @@
-## ³õÊ¼»¯º¯Êı£¬Éè¶¨Òª²Ù×÷µÄ¹ÉÆ±¡¢»ù×¼µÈµÈ
+## åˆå§‹åŒ–å‡½æ•°ï¼Œè®¾å®šè¦æ“ä½œçš„è‚¡ç¥¨ã€åŸºå‡†ç­‰ç­‰
+## åŠ å…¥ä¸€æ¡æ³¨é‡Š
 from jqlib.technical_analysis import *
 def initialize(context):
-    # Éè¶¨Ö¸Êı »¦Éî300
+    # è®¾å®šæŒ‡æ•° æ²ªæ·±300
     g.stockindex = '000300.XSHG' 
     
     g.month = context.current_dt.month
-    # Éè¶¨»¦Éî300×÷Îª»ù×¼
+    # è®¾å®šæ²ªæ·±300ä½œä¸ºåŸºå‡†
     set_benchmark('000300.XSHG')
-    #¹ÉÆ±³Ø È«¾Ö±äÁ¿
+    #è‚¡ç¥¨æ±  å…¨å±€å˜é‡
     g.codeList = []
     
-    #ÂòÈë¼Ûdict key£ºcode value£ºÂòÈë¼Û
+    #ä¹°å…¥ä»·dict keyï¼šcode valueï¼šä¹°å…¥ä»·
     g.buyPriceDict = {}
     
-    #Ö¹Ëğdict  key:code value:Ö¹ËğÂÊ Ä¬ÈÏ0.9
+    #æ­¢æŸdict  key:code value:æ­¢æŸç‡ é»˜è®¤0.9
     g.cutLostDict = {}
     
-    #ÂòÈë×Ü¶îdict ÈçÄ³Ö»¹ÉÆ±ÏÖÔÚ³ÖÓĞ×Ü¼ÛÖµ
+    #ä¹°å…¥æ€»é¢dict å¦‚æŸåªè‚¡ç¥¨ç°åœ¨æŒæœ‰æ€»ä»·å€¼
     
-    #»ù±¾Ãæ
-    # run_monthly(check_stocks,1,'open')#Ã¿ÄêÔËĞĞÒ»´Î ĞèÒª±ä¶¯·½·¨ÄÚreturnÌõ¼ş
+    #åŸºæœ¬é¢
+    # run_monthly(check_stocks,1,'open')#æ¯å¹´è¿è¡Œä¸€æ¬¡ éœ€è¦å˜åŠ¨æ–¹æ³•å†…returnæ¡ä»¶
     run_weekly(check_stocks, 1, time='open')
-    #½»Ò×º¯ÊıÃ¿ÌìÊÕÅÌºóÔËĞĞ 15:30
+    #äº¤æ˜“å‡½æ•°æ¯å¤©æ”¶ç›˜åè¿è¡Œ 15:30
     run_daily(trade, time='15:00')   
     
     run_daily(sell, time='every_bar')   
     
-## Ñ¡¹Éº¯Êı£¨»ù±¾Ãæ£©
+## é€‰è‚¡å‡½æ•°ï¼ˆåŸºæœ¬é¢ï¼‰
 def check_stocks(context):
     
-    #Ã¿ÄêÔËĞĞÒ»´Î
+    #æ¯å¹´è¿è¡Œä¸€æ¬¡
     # month = context.current_dt.month
     # if month%12 != g.month%12:
     #     return
     
-    # »ñÈ¡»¦Éî300³É·Ö¹É
+    # è·å–æ²ªæ·±300æˆåˆ†è‚¡
     security = get_index_stocks(g.stockindex)
     stocks = get_fundamentals(query(
-            valuation.code,# ¹ÉÆ±´úÂë
-            valuation.pb_ratio, # ÊĞ¾»ÂÊ
-            valuation.circulating_market_cap, # Á÷Í¨ÊĞÖµ
-            cash_flow.net_operate_cash_flow,    # ¾­Óª»î¶¯²úÉúµÄÏÖ½ğÁ÷Á¿¾»¶î
+            valuation.code,# è‚¡ç¥¨ä»£ç 
+            valuation.pb_ratio, # å¸‚å‡€ç‡
+            valuation.circulating_market_cap, # æµé€šå¸‚å€¼
+            cash_flow.net_operate_cash_flow,    # ç»è¥æ´»åŠ¨äº§ç”Ÿçš„ç°é‡‘æµé‡å‡€é¢
         ).filter(
             valuation.code.in_(security),
-            valuation.pb_ratio > 1, #ÊĞ¾»ÂÊ>1
-            valuation.circulating_market_cap > 200, #Á÷Í¨ÊĞÖµ>200ÒÚ
-            cash_flow.net_operate_cash_flow > 0 #ÏÖ½ğÁ÷>0 
+            valuation.pb_ratio > 1, #å¸‚å‡€ç‡>1
+            valuation.circulating_market_cap > 200, #æµé€šå¸‚å€¼>200äº¿
+            cash_flow.net_operate_cash_flow > 0 #ç°é‡‘æµ>0 
             
         ))
     
                               
-    codes = list(stocks['code']) # ¹ÉÆ±´úÂëÁĞ±í  listÀàĞÍ
+    codes = list(stocks['code']) # è‚¡ç¥¨ä»£ç åˆ—è¡¨  listç±»å‹
     
     
     
-    # log.info( codes ) # Êä³ö¹ÉÆ±Âë
+    # log.info( codes ) # è¾“å‡ºè‚¡ç¥¨ç 
     for code in codes:
         
         q = query(
@@ -67,124 +68,124 @@ def check_stocks(context):
         df_last2 = get_fundamentals(q, statDate= int(context.current_dt.year)-2)
         # log.info(df_last2)
         # if not df_last2.empty :
-            # log.info(code,get_security_info(code).display_name,"+++ -2 ÏÖ½ğÁ÷+++",df_last2.iloc[0,0])
+            # log.info(code,get_security_info(code).display_name,"+++ -2 ç°é‡‘æµ+++",df_last2.iloc[0,0])
         df_last1 = get_fundamentals(q, statDate = int(context.current_dt.year)-1)
         
         # log.info(df_last1)
         # if not df_last1.empty :
-            # log.info(code,get_security_info(code).display_name,"+++ -1 ÏÖ½ğÁ÷+++",df_last1.iloc[0,0])
+            # log.info(code,get_security_info(code).display_name,"+++ -1 ç°é‡‘æµ+++",df_last1.iloc[0,0])
         
      
-        # df.iloc[0,0] ¾ÍÊÇÏÖ½ğÁ÷¾ßÌåÊıÖµ iloc[0,0] £¬iloc[0,0] ÊÇ°´ÕÕÎ»ÖÃ»ñÈ¡Êı¾İ
+        # df.iloc[0,0] å°±æ˜¯ç°é‡‘æµå…·ä½“æ•°å€¼ iloc[0,0] ï¼Œiloc[0,0] æ˜¯æŒ‰ç…§ä½ç½®è·å–æ•°æ®
       
-        # start_date = get_security_info(code).start_date #[datetime.date] ÀàĞÍ
-        h = attribute_history(code, 1, '1d', ('close')) #ÀúÊ·Êı¾İ,±¾ĞĞÎª¹ıÈ¥Ò»ÌìµÄÊÕÅÌ¼Û 
-        #  h['close'][0] < 5 or h['close'][0] > 50 or#¹ıÂËµô5ÔªÒÔÏÂ£¬50ÔªÒÔÉÏµÄ¹ÉÆ±
-        if  (not df_last2.empty and df_last2.iloc[0,0] <0) or (not df_last1.empty and df_last1.iloc[0,0]) < 0: # ¹ıÂËÏÖ½ğÁ÷ < 0 
+        # start_date = get_security_info(code).start_date #[datetime.date] ç±»å‹
+        h = attribute_history(code, 1, '1d', ('close')) #å†å²æ•°æ®,æœ¬è¡Œä¸ºè¿‡å»ä¸€å¤©çš„æ”¶ç›˜ä»· 
+        #  h['close'][0] < 5 or h['close'][0] > 50 or#è¿‡æ»¤æ‰5å…ƒä»¥ä¸‹ï¼Œ50å…ƒä»¥ä¸Šçš„è‚¡ç¥¨
+        if  (not df_last2.empty and df_last2.iloc[0,0] <0) or (not df_last1.empty and df_last1.iloc[0,0]) < 0: # è¿‡æ»¤ç°é‡‘æµ < 0 
             codes.remove(code)
         # else:
         #     log.info("~~~~~~~~~~~~~~~",code,get_security_info(code).display_name)
     g.codeList = codes
 
-    log.info( context.current_dt.strftime("%Y-%m-%d"),"»ù±¾ÃæÑ¡¹É£º",len(g.codeList),"Ö»" ) #ÁĞ±í³¤¶È
+    log.info( context.current_dt.strftime("%Y-%m-%d"),"åŸºæœ¬é¢é€‰è‚¡ï¼š",len(g.codeList),"åª" ) #åˆ—è¡¨é•¿åº¦
     # for gCode in g.codeList:
     #     log.info(gCode,get_security_info(gCode).display_name)
     # log.info("******************************")
     return None
 
-##½»Ò×º¯Êı
+##äº¤æ˜“å‡½æ•°
 def trade(context):
-    tradeList = [ ] #½»Ò×ÁĞ±íÇå¿Õ
-    wantList = [ ] #´ı¹ºÁĞ±í
+    tradeList = [ ] #äº¤æ˜“åˆ—è¡¨æ¸…ç©º
+    wantList = [ ] #å¾…è´­åˆ—è¡¨
     
-    curDate = context.current_dt.strftime("%Y-%m-%d") # µ±Ç°Âß¼­ÈÕÆÚ strÀàĞÍ
+    curDate = context.current_dt.strftime("%Y-%m-%d") # å½“å‰é€»è¾‘æ—¥æœŸ strç±»å‹
     for code in g.codeList:
-        #Ö¸ÊıÆ½¾ùÏß
+        #æŒ‡æ•°å¹³å‡çº¿
         EXPMA34 = EXPMA(code, check_date = curDate, timeperiod=34)[code] 
         EXPMA55 = EXPMA(code, check_date = curDate, timeperiod=55)[code] 
         EXPMA89 = EXPMA(code, check_date = curDate, timeperiod=89)[code] 
         
-        #ÀúÊ·Êı¾İ ¹ıÈ¥4ÌìµÄ¿ªÅÌ¼Û ÊÕÅÌ¼Û ³É½»Á¿£¨½ğ¶î£©
+        #å†å²æ•°æ® è¿‡å»4å¤©çš„å¼€ç›˜ä»· æ”¶ç›˜ä»· æˆäº¤é‡ï¼ˆé‡‘é¢ï¼‰
         h = attribute_history(code, 4, '1d', ('open','close', 'money')) 
         # log.info(h)
         #EXPMA34>EXPMA55>EXPMA89
-        #Á¬ĞøÈıÌìÉÏÕÇ (h.iloc[-1]['open']<h.iloc[-1]['close'])
-        #³É½»Á¿Ôö³¤£¬ÈıÌì³É½»Á¿¿ÉÒÔ²»ÊÇµİÔö£¬µ«ÊÇµÚ2¡¢3Ìì³É½»Á¿Òª±ÈµÚÒ»ÌìÉÏÕÇ´ó (h.iloc[-1]['money']>h.iloc[-3]['money'])
+        #è¿ç»­ä¸‰å¤©ä¸Šæ¶¨ (h.iloc[-1]['open']<h.iloc[-1]['close'])
+        #æˆäº¤é‡å¢é•¿ï¼Œä¸‰å¤©æˆäº¤é‡å¯ä»¥ä¸æ˜¯é€’å¢ï¼Œä½†æ˜¯ç¬¬2ã€3å¤©æˆäº¤é‡è¦æ¯”ç¬¬ä¸€å¤©ä¸Šæ¶¨å¤§ (h.iloc[-1]['money']>h.iloc[-3]['money'])
         if (EXPMA34>EXPMA55) and (EXPMA55>EXPMA89)and(h.iloc[-4]['open']<h.iloc[-4]['close'])and(h.iloc[-2]['open']<h.iloc[-2]['close'])and(h.iloc[-3]['open']<h.iloc[-3]['close'])and(h.iloc[-2]['money']>h.iloc[-4]['money']): 
             tradeList.append(code) 
         
-    log.info("»ù±¾Ãæ¹ÉÆ±³ØÊıÁ¿£º",len(g.codeList))    
-    log.info("^^^^^^^^^^^^^¿ÉÓÃ×Ê½ğ£º",context.portfolio.available_cash)
-    log.info("####################½»Ò×º¯ÊıÑ¡¹É£º",len(tradeList),"Ö»####################" ) 
+    log.info("åŸºæœ¬é¢è‚¡ç¥¨æ± æ•°é‡ï¼š",len(g.codeList))    
+    log.info("^^^^^^^^^^^^^å¯ç”¨èµ„é‡‘ï¼š",context.portfolio.available_cash)
+    log.info("####################äº¤æ˜“å‡½æ•°é€‰è‚¡ï¼š",len(tradeList),"åª####################" ) 
     for code in tradeList:
         log.info(code,get_security_info(code).display_name)
-    log.info("####################½»Ò×º¯Êı½áÊø####################" ) 
+    log.info("####################äº¤æ˜“å‡½æ•°ç»“æŸ####################" ) 
     
                 
-    # ¹ÉÆ±³ØÁĞ±í         
+    # è‚¡ç¥¨æ± åˆ—è¡¨         
     if len(tradeList) > 0 :
         upperband, middleband, lowerband  = Bollinger_Bands(tradeList, check_date = curDate, timeperiod=21, nbdevup=1.5, nbdevdn=1.5)
         for code in tradeList:
-            #×òÌìºÍ½ñÌìĞèÒªÏÂµø µøµ¹MA21Ö®ÉÏ   ----¿ªÅÌ¼Û ÊÕÅÌ¼Û MA21 BOLL ³É½»Á¿
-            #1±¶±ê×¼²î
-            #²¢ÇÒ³É½»Á¿ÒªĞ¡ÓÚÉÏÕÇµÚÈıÌìÉÏÕÇ³É½»Á¿µÄ75%
+            #æ˜¨å¤©å’Œä»Šå¤©éœ€è¦ä¸‹è·Œ è·Œå€’MA21ä¹‹ä¸Š   ----å¼€ç›˜ä»· æ”¶ç›˜ä»· MA21 BOLL æˆäº¤é‡
+            #1å€æ ‡å‡†å·®
+            #å¹¶ä¸”æˆäº¤é‡è¦å°äºä¸Šæ¶¨ç¬¬ä¸‰å¤©ä¸Šæ¶¨æˆäº¤é‡çš„75%
             EXPMA21 = EXPMA(code, check_date = curDate, timeperiod=21)[code] 
             
-            h_0 = attribute_history(code, 1, '240m', ('open','close', 'money')) #½ñÌìµÄ¿ªÅÌ¼Û ÊÕÅÌ¼Û ³É½»Á¿
-            h_1 = attribute_history(code, 2, '1d', ('open','close', 'money'))  #¹ıÈ¥Á½ÌìµÄ¡£¡£
+            h_0 = attribute_history(code, 1, '240m', ('open','close', 'money')) #ä»Šå¤©çš„å¼€ç›˜ä»· æ”¶ç›˜ä»· æˆäº¤é‡
+            h_1 = attribute_history(code, 2, '1d', ('open','close', 'money'))  #è¿‡å»ä¸¤å¤©çš„ã€‚ã€‚
             if h_0.iloc[-1]['open']<h_0.iloc[-1]['close'] and h_1.iloc[-1]['open']<h_1.iloc[-1]['close'] and h_0.iloc[-1]['close']>EXPMA21 and upperband[code] > h_0.iloc[-1]['close'] and lowerband[code] < h_0.iloc[-1]['close'] and (h_0.iloc[-1]['money']) < (h_1.iloc[-2]['money']*0.75):
                 # log.info("_+_+_+_+_+_+_+",code,h_0.iloc[-1]['money'])
                 wantList.append(code) 
                 # log.info(code,h_0.iloc[-1]['money'],h_1.iloc[-2]['money'])
        
         
-    #ÂòÈëÌõ¼ş        
+    #ä¹°å…¥æ¡ä»¶        
     if (len(wantList) > 0 )and (context.portfolio.available_cash>0 ): 
-        #½»Ò×½ğ¶îÎª¿ÉÓÃ×Ê½ğµÄ20%
+        #äº¤æ˜“é‡‘é¢ä¸ºå¯ç”¨èµ„é‡‘çš„20%
         tradeValue = context.portfolio.available_cash/5/len(wantList)
         for code in wantList:
             order_value(code, tradeValue)
-            h_0 = attribute_history(code, 1, '240m', ('close')) #½ñÌìÊÕÅÌ¼Û
+            h_0 = attribute_history(code, 1, '240m', ('close')) #ä»Šå¤©æ”¶ç›˜ä»·
             g.buyPriceDict[code] = h_0.iloc[-1]['close']
             g.cutLostDict[code] = 0.93
-            log.info(code,get_security_info(code).display_name,"ÂòÈë",tradeValue,"Ôª") 
+            log.info(code,get_security_info(code).display_name,"ä¹°å…¥",tradeValue,"å…ƒ") 
             
             
-#Âô³öº¯Êı        
+#å–å‡ºå‡½æ•°        
 def sell(context):  
-    ## »ñÈ¡³Ö²ÖÁĞ±í
+    ## è·å–æŒä»“åˆ—è¡¨
     sell_list = list(context.portfolio.positions.keys())
    
-    # Èç¹ûÓĞ³Ö²Ö ±éÀú£¬Âô³öÌõ¼ş
+    # å¦‚æœæœ‰æŒä»“ éå†ï¼Œå–å‡ºæ¡ä»¶
     if len(sell_list) > 0 :
         log.info("^^^^^^^^^^^^^",len(sell_list))
-        log.info("^^^^^^^^^^^^^¿ÉÓÃ×Ê½ğ£º",context.portfolio.available_cash)
+        log.info("^^^^^^^^^^^^^å¯ç”¨èµ„é‡‘ï¼š",context.portfolio.available_cash)
         for sellCode in sell_list:  
-            #Ö¹Ëğ
+            #æ­¢æŸ
             h_0 = attribute_history(sellCode, 1, '240m', ('close')) 
-           # closePrice = h_0.iloc[-1]['close']#½ñÌìÊÕÅÌ¼Û
-            buyPrice = g.buyPriceDict[sellCode]#¸Ã¹ÉÆ±ÂòÈë¼Û¸ñ
+           # closePrice = h_0.iloc[-1]['close']#ä»Šå¤©æ”¶ç›˜ä»·
+            buyPrice = g.buyPriceDict[sellCode]#è¯¥è‚¡ç¥¨ä¹°å…¥ä»·æ ¼
             closePrice = get_current_data()[sellCode].last_price
             # cw = str(context.portfolio.positions[sellCode].closeable_amount)
-            log.info(sellCode,get_security_info(sellCode).display_name,"ÏÖ¼Û£º¡¾",closePrice,"¡¿ ÂòÈë¼Û£º¡¾",buyPrice,"¡¿ Ö¹ËğÂÊ£º¡¾"+str(g.cutLostDict[sellCode])+"¡¿ ²ÖÎ»£º¡¾"+str(context.portfolio.positions[sellCode].closeable_amount)+"¡¿")
-            #Ö¹Ó¯30% Ìõ¼ş
+            log.info(sellCode,get_security_info(sellCode).display_name,"ç°ä»·ï¼šã€",closePrice,"ã€‘ ä¹°å…¥ä»·ï¼šã€",buyPrice,"ã€‘ æ­¢æŸç‡ï¼šã€"+str(g.cutLostDict[sellCode])+"ã€‘ ä»“ä½ï¼šã€"+str(context.portfolio.positions[sellCode].closeable_amount)+"ã€‘")
+            #æ­¢ç›ˆ30% æ¡ä»¶
             if closePrice >= (buyPrice * 1.3):
                 order_target_value(sellCode, 0)
-                log.info(sellCode,get_security_info(sellCode).display_name,"Ö¹Ó¯Çå²Ö") 
+                log.info(sellCode,get_security_info(sellCode).display_name,"æ­¢ç›ˆæ¸…ä»“") 
             elif closePrice <= buyPrice * g.cutLostDict[sellCode]:
                 order_target_value(sellCode, 0)
-                log.info(sellCode,get_security_info(sellCode).display_name,"Ö¹ËğÇå²Ö") 
+                log.info(sellCode,get_security_info(sellCode).display_name,"æ­¢æŸæ¸…ä»“") 
             # elif closePrice > (buyPrice) and closePrice <= (buyPrice * 1.1):
-            #     log.info(sellCode,get_security_info(sellCode).display_name,"µ÷ÕûÖ¹ËğÂÊÎª£º¡¾",1.03,"¡¿") 
+            #     log.info(sellCode,get_security_info(sellCode).display_name,"è°ƒæ•´æ­¢æŸç‡ä¸ºï¼šã€",1.03,"ã€‘") 
             #     g.cutLostDict[sellCode] = 1.03
             elif closePrice > (buyPrice * 1.1) and closePrice <= (buyPrice * 1.2) and g.cutLostDict[sellCode] != 1.07:
-                log.info(sellCode,get_security_info(sellCode).display_name,"µ÷ÕûÖ¹ËğÂÊÎª£º¡¾",1.07,"¡¿") 
+                log.info(sellCode,get_security_info(sellCode).display_name,"è°ƒæ•´æ­¢æŸç‡ä¸ºï¼šã€",1.07,"ã€‘") 
                 g.cutLostDict[sellCode] = 1.07
             elif closePrice > (buyPrice * 1.2) and closePrice <= (buyPrice * 1.3) and g.cutLostDict[sellCode] != 1.15:
-                log.info(sellCode,get_security_info(sellCode).display_name,"µ÷ÕûÖ¹ËğÂÊÎª£º¡¾",1.15,"¡¿") 
+                log.info(sellCode,get_security_info(sellCode).display_name,"è°ƒæ•´æ­¢æŸç‡ä¸ºï¼šã€",1.15,"ã€‘") 
                 g.cutLostDict[sellCode] = 1.15
             # elif closePrice <= (buyPrice * 0.93) and g.cutLostDict[sellCode] ==0.9 :
             #     order(sellCode, -context.portfolio.positions[sellCode].closeable_amount/2)
-            #     log.info(sellCode,get_security_info(sellCode).display_name,"¸Ã¹ÉÆ±Çå°ë²Ö£¬ÇÒµ÷ÕûÖ¹ËğÂÊÎª£º¡¾",0.87,"¡¿") 
+            #     log.info(sellCode,get_security_info(sellCode).display_name,"è¯¥è‚¡ç¥¨æ¸…åŠä»“ï¼Œä¸”è°ƒæ•´æ­¢æŸç‡ä¸ºï¼šã€",0.87,"ã€‘") 
             #     g.cutLostDict[sellCode] = 0.87
                 
