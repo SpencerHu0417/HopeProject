@@ -1,4 +1,5 @@
 ## 初始化函数，设定要操作的股票、基准等等
+## 变动测试
 ## 加入一条注释
 from jqlib.technical_analysis import *
 def initialize(context):
